@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -6,6 +7,7 @@ class BiometricService {
   static const String _enabledKey = 'biometric_enabled';
 
   Future<bool> get isAvailable async {
+    if (kIsWeb) return false;
     try {
       return await _auth.canCheckBiometrics || await _auth.isDeviceSupported();
     } catch (_) {
@@ -24,6 +26,7 @@ class BiometricService {
   }
 
   Future<bool> authenticate() async {
+    if (kIsWeb) return true;
     try {
       return await _auth.authenticate(
         localizedReason: 'បញ្ជាក់អត្តសញ្ញាណដើម្បីបើកកម្មវិធី',
