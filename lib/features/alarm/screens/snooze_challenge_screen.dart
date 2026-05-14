@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -23,7 +24,9 @@ class _SnoozeChallengeScreenState extends State<SnoozeChallengeScreen> {
   @override
   void initState() {
     super.initState();
-    _initCamera();
+    if (!kIsWeb) {
+      _initCamera();
+    }
   }
 
   Future<void> _initCamera() async {
@@ -115,35 +118,58 @@ class _SnoozeChallengeScreenState extends State<SnoozeChallengeScreen> {
             ).animate(delay: 300.ms).fadeIn(),
             const SizedBox(height: 32),
             Expanded(
-              child: _isCameraReady
-                  ? ClipRRect(
-                      borderRadius: BorderRadius.circular(24),
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 24),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(24),
-                          border: Border.all(
-                            color: _challengeCompleted
-                                ? Colors.green
-                                : Colors.white24,
-                            width: 2,
+              child: kIsWeb
+                  ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.videocam_off_rounded,
+                              size: 64, color: Colors.white24),
+                          const SizedBox(height: 16),
+                          Text(
+                            'មុខងារកាមេរ៉ាមិនអាចប្រើបានលើ Web',
+                            style: theme.textTheme.bodyLarge?.copyWith(
+                              color: Colors.white38,
+                            ),
+                            textAlign: TextAlign.center,
                           ),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(22),
-                          child: CameraPreview(_cameraController!),
-                        ),
+                          const SizedBox(height: 24),
+                          ElevatedButton(
+                            onPressed: () => Navigator.of(context).pop(true),
+                            child: const Text('បញ្ឈប់រោទ៍'),
+                          ),
+                        ],
                       ),
                     )
-                  : const Center(
-                      child: CircularProgressIndicator(
-                        color: Colors.white24,
-                        strokeWidth: 1.5,
-                      ),
-                    ),
+                  : _isCameraReady
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(24),
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 24),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(24),
+                              border: Border.all(
+                                color: _challengeCompleted
+                                    ? Colors.green
+                                    : Colors.white24,
+                                width: 2,
+                              ),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(22),
+                              child: CameraPreview(_cameraController!),
+                            ),
+                          ),
+                        )
+                      : const Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.white24,
+                            strokeWidth: 1.5,
+                          ),
+                        ),
             ),
             const SizedBox(height: 32),
-            _buildStatusIndicators(theme),
+            if (!kIsWeb) _buildStatusIndicators(theme),
             const SizedBox(height: 16),
             if (_challengeCompleted)
               Text(
@@ -152,7 +178,7 @@ class _SnoozeChallengeScreenState extends State<SnoozeChallengeScreen> {
                   color: Colors.green,
                 ),
               ).animate().fadeIn().scale(),
-            if (!_challengeCompleted && _lastResult != null)
+            if (!kIsWeb && !_challengeCompleted && _lastResult != null)
               _buildProgressBar(),
             const SizedBox(height: 48),
           ],
