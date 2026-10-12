@@ -2,7 +2,7 @@
 
 A premium, minimalist productivity & alarm application built with Flutter, designed with a monochromatic aesthetic and full Khmer language support.
 
-**Made with Unreal Engine 5 by Makara**
+**Made with Flutter by Makara**
 
 ---
 
